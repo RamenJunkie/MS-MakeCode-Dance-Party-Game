@@ -7,8 +7,19 @@ controller.left.onEvent(ControllerButtonEvent.Pressed, function () {
 controller.right.onEvent(ControllerButtonEvent.Pressed, function () {
     Dancer.setPosition(130, 100)
 })
+sprites.onOverlap(SpriteKind.Player, SpriteKind.Projectile, function (sprite, otherSprite) {
+    otherSprite.destroy(effects.disintegrate, 100)
+    info.changeScoreBy(1)
+})
 controller.down.onEvent(ControllerButtonEvent.Pressed, function () {
     Dancer.setPosition(100, 100)
+})
+info.onLifeZero(function () {
+    game.over(true, effects.confetti)
+})
+scene.onHitWall(SpriteKind.Projectile, function (sprite, location) {
+    sprite.destroy(effects.fire, 100)
+    info.changeLifeBy(-1)
 })
 let Right: Sprite = null
 let Left: Sprite = null
@@ -38,6 +49,8 @@ Dancer = sprites.create(img`
     `, SpriteKind.Player)
 Dancer.setPosition(80, 100)
 let Speed = 40
+info.setScore(0)
+info.setLife(5)
 game.onUpdateInterval(2000, function () {
     Speed += 1
 })
